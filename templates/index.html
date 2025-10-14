@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iris Species Predictor</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        padding: 40px;
+        max-width: 600px;
+        width: 100%;
+      }
+
+      h1 {
+        color: #667eea;
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 2.5em;
+      }
+
+      .subtitle {
+        text-align: center;
+        color: #666;
+        margin-bottom: 30px;
+        font-size: 1.1em;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        color: #333;
+        font-weight: 600;
+        font-size: 1.05em;
+      }
+
+      input[type="number"] {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1em;
+        transition: all 0.3s ease;
+      }
+
+      input[type="number"]:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      button {
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1.2em;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        margin-top: 10px;
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+      }
+
+      button:active {
+        transform: translateY(0);
+      }
+
+      .result {
+        margin-top: 30px;
+        padding: 25px;
+        background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+        border-radius: 15px;
+        text-align: center;
+        animation: slideIn 0.5s ease;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .result h2 {
+        color: #2c3e50;
+        margin-bottom: 10px;
+        font-size: 1.8em;
+      }
+
+      .result p {
+        color: #34495e;
+        font-size: 1.2em;
+        margin: 5px 0;
+      }
+
+      .species-name {
+        font-size: 2em;
+        font-weight: bold;
+        color: #667eea;
+        margin: 15px 0;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+
+      .confidence {
+        font-size: 1.1em;
+        color: #2c3e50;
+        margin-top: 10px;
+      }
+
+      .error {
+        margin-top: 20px;
+        padding: 20px;
+        background: #ff6b6b;
+        color: white;
+        border-radius: 10px;
+        text-align: center;
+        font-weight: 600;
+        animation: slideIn 0.5s ease;
+      }
+
+      .info-box {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 30px;
+        border-left: 4px solid #667eea;
+      }
+
+      .info-box h3 {
+        color: #667eea;
+        margin-bottom: 10px;
+      }
+
+      .info-box ul {
+        list-style: none;
+        padding-left: 0;
+      }
+
+      .info-box li {
+        color: #666;
+        margin: 5px 0;
+        padding-left: 20px;
+        position: relative;
+      }
+
+      .info-box li:before {
+        content: "🌸";
+        position: absolute;
+        left: 0;
+      }
+
+      @media (max-width: 600px) {
+        .container {
+          padding: 25px;
+        }
+
+        h1 {
+          font-size: 2em;
+        }
+
+        .species-name {
+          font-size: 1.5em;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🌸 Iris Species Predictor</h1>
+      <p class="subtitle">
+        Enter the flower measurements to predict the species
+      </p>
+
+      <form method="POST" action="/predict">
+        <div class="form-group">
+          <label for="sepal_length">Sepal Length (cm)</label>
+          <input
+            type="number"
+            step="0.1"
+            name="sepal_length"
+            id="sepal_length"
+            value="{{ sepal_length if sepal_length else '' }}"
+            placeholder="e.g., 5.1"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="sepal_width">Sepal Width (cm)</label>
+          <input
+            type="number"
+            step="0.1"
+            name="sepal_width"
+            id="sepal_width"
+            value="{{ sepal_width if sepal_width else '' }}"
+            placeholder="e.g., 3.5"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="petal_length">Petal Length (cm)</label>
+          <input
+            type="number"
+            step="0.1"
+            name="petal_length"
+            id="petal_length"
+            value="{{ petal_length if petal_length else '' }}"
+            placeholder="e.g., 1.4"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="petal_width">Petal Width (cm)</label>
+          <input
+            type="number"
+            step="0.1"
+            name="petal_width"
+            id="petal_width"
+            value="{{ petal_width if petal_width else '' }}"
+            placeholder="e.g., 0.2"
+            required
+          />
+        </div>
+
+        <button type="submit">🔮 Predict Species</button>
+      </form>
+
+      {% if prediction %}
+      <div class="result">
+        <h2>Prediction Result</h2>
+        <div class="species-name">{{ prediction }}</div>
+        <p class="confidence">Confidence: {{ confidence }}%</p>
+        <p>
+          Your iris flower is predicted to be
+          <strong>Iris {{ prediction }}</strong>!
+        </p>
+      </div>
+      {% endif %} {% if error %}
+      <div class="error">⚠️ {{ error }}</div>
+      {% endif %}
+
+      <div class="info-box">
+        <h3>About Iris Species</h3>
+        <ul>
+          <li><strong>Setosa:</strong> Small petals, distinctive features</li>
+          <li><strong>Versicolor:</strong> Medium-sized petals</li>
+          <li><strong>Virginica:</strong> Large petals and sepals</li>
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>

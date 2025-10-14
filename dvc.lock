@@ -1,0 +1,61 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: D:/Python/python.exe src/prepare.py
+    deps:
+    - path: Dataset/Iris.csv
+      hash: md5
+      md5: 717820ef0af287ff346c5cabfb4c612c
+      size: 5107
+    - path: src/prepare.py
+      hash: md5
+      md5: 277917bac2dd035897427112d5dc6151
+      size: 1795
+    outs:
+    - path: data/test.csv
+      hash: md5
+      md5: e556f694c46bce1fc64960c80a1545ea
+      size: 1003
+    - path: data/train.csv
+      hash: md5
+      md5: 15fdb686bfb1f0dea92be009cb55fe6b
+      size: 3823
+  train:
+    cmd: D:/Python/python.exe src/train.py
+    deps:
+    - path: data/train.csv
+      hash: md5
+      md5: 15fdb686bfb1f0dea92be009cb55fe6b
+      size: 3823
+    - path: src/train.py
+      hash: md5
+      md5: b00a61fe83dec8f42f202ca97836a8a1
+      size: 1869
+    outs:
+    - path: models/model.joblib
+      hash: md5
+      md5: f8091dda1d5c88747100d3641733e7a5
+      size: 1215
+    - path: models/scaler.joblib
+      hash: md5
+      md5: ab9e4fe5474fcfbe6a2a8357e65f978e
+      size: 1079
+  evaluate:
+    cmd: D:/Python/python.exe src/evaluate.py
+    deps:
+    - path: data/test.csv
+      hash: md5
+      md5: e556f694c46bce1fc64960c80a1545ea
+      size: 1003
+    - path: models/model.joblib
+      hash: md5
+      md5: f8091dda1d5c88747100d3641733e7a5
+      size: 1215
+    - path: models/scaler.joblib
+      hash: md5
+      md5: ab9e4fe5474fcfbe6a2a8357e65f978e
+      size: 1079
+    - path: src/evaluate.py
+      hash: md5
+      md5: abbce39cf3e7c32bcdfdc16ef4206c3e
+      size: 1811

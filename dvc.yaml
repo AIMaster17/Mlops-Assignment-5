@@ -1,0 +1,26 @@
+stages:
+  prepare:
+    cmd: D:/Python/python.exe src/prepare.py
+    deps:
+      - Dataset/Iris.csv
+      - src/prepare.py
+    outs:
+      - data/train.csv
+      - data/test.csv
+
+  train:
+    cmd: D:/Python/python.exe src/train.py
+    deps:
+      - data/train.csv
+      - src/train.py
+    outs:
+      - models/model.joblib
+      - models/scaler.joblib
+
+  evaluate:
+    cmd: D:/Python/python.exe src/evaluate.py
+    deps:
+      - data/test.csv
+      - models/model.joblib
+      - models/scaler.joblib
+      - src/evaluate.py
