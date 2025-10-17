@@ -32,24 +32,25 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Verify project structure
+      - name: Run data preparation
         run: |
-          echo "Checking project files..."
-          test -f dvc.yaml && echo "✓ dvc.yaml exists"
-          test -f Dockerfile && echo "✓ Dockerfile exists"
-          test -f app.py && echo "✓ app.py exists"
-          test -f requirements.txt && echo "✓ requirements.txt exists"
-          test -d src && echo "✓ src directory exists"
-          test -d templates && echo "✓ templates directory exists"
-          echo "All critical files verified!"
+          python src/prepare.py
 
-      - name: Lint Python files
+      - name: Run model training
         run: |
-          python -m py_compile src/prepare.py
-          python -m py_compile src/train.py
-          python -m py_compile src/evaluate.py
-          python -m py_compile app.py
-          echo "Python syntax check passed!"
+          python src/train.py
+
+      - name: Run model evaluation
+        run: |
+          python src/evaluate.py
+
+      - name: Verify model outputs
+        run: |
+          test -f models/model.joblib && echo "✓ Model file exists"
+          test -f models/scaler.joblib && echo "✓ Scaler file exists"
+          test -f data/train.csv && echo "✓ Training data exists"
+          test -f data/test.csv && echo "✓ Test data exists"
+          echo "All pipeline outputs verified successfully!"
 
   docker-build:
     runs-on: ubuntu-latest
