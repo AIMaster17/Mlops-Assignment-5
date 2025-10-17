@@ -32,9 +32,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Install DVC
+      - name: Install DVC (compatible version)
         run: |
-          pip install dvc
+          pip uninstall -y dvc dvc-objects
+          pip install dvc==3.55.2
 
       - name: Run DVC pipeline
         run: |
